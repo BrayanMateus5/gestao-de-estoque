@@ -1,5 +1,3 @@
-# gestao-de-estoque
-Sistema de Gestão de Estoque e Pedidos 
 # 💼 Sistema de Gestão de Estoques e Pedidos
 
 O presente projeto consiste no desenvolvimento de um sistema backend em **Java puro**, utilizando **Hibernate** e **MySQL** como sistema gerenciador de banco de dados.  
