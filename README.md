@@ -49,32 +49,6 @@ Essa arquitetura facilita a manutenção e a escalabilidade do sistema, permitin
 
 ---
 
-## 🗄️ Configuração do Banco de Dados
-
-O banco de dados deve ser previamente criado no MySQL com o seguinte comando:
-
-```sql
-CREATE DATABASE gestao_estoques_pedidos CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-```
-
-O arquivo de configuração do Hibernate (`hibernate.cfg.xml`) deve conter os parâmetros de conexão:
-
-```xml
-<hibernate-configuration>
-  <session-factory>
-    <property name="hibernate.connection.driver_class">com.mysql.cj.jdbc.Driver</property>
-    <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/gestao_estoques_pedidos</property>
-    <property name="hibernate.connection.username">root</property>
-    <property name="hibernate.connection.password">sua_senha</property>
-    <property name="hibernate.dialect">org.hibernate.dialect.MySQL8Dialect</property>
-    <property name="hibernate.hbm2ddl.auto">update</property>
-    <property name="show_sql">true</property>
-  </session-factory>
-</hibernate-configuration>
-```
-
----
-
 ## 🔐 Controle de Acesso
 
 O sistema contempla dois tipos de usuários:  
@@ -82,78 +56,6 @@ O sistema contempla dois tipos de usuários:
 - **Secretária:** acesso restrito, sem permissão para visualizar o histórico de vendas.  
 
 A autenticação é realizada de forma simples, mediante validação de login e senha cadastrados no banco de dados.
-
----
-
-## 🌐 Estrutura de Endpoints (API REST)
-
-### 1️⃣ Login
-| Método | Endpoint  | Descrição |
-|---------|------------|-----------|
-| POST | `/login` | Realiza a autenticação do usuário no sistema. |
-
-**Exemplo de requisição:**
-```json
-{
-  "usuario": "dono",
-  "senha": "1234"
-}
-```
-
----
-
-### 2️⃣ Clientes
-| Método | Endpoint | Descrição |
-|---------|-----------|-----------|
-| POST | `/clientes` | Cadastra um novo cliente. |
-| GET | `/clientes` | Lista todos os clientes cadastrados. |
-| GET | `/clientes/{id}` | Consulta informações de um cliente específico. |
-| PUT | `/clientes/{id}` | Atualiza os dados de um cliente existente. |
-| DELETE | `/clientes/{id}` | Remove um cliente do sistema. |
-
----
-
-### 3️⃣ Fornecedores
-| Método | Endpoint | Descrição |
-|---------|-----------|-----------|
-| POST | `/fornecedores` | Adiciona um novo fornecedor. |
-| GET | `/fornecedores` | Lista os fornecedores registrados. |
-| GET | `/fornecedores/{id}` | Exibe informações de um fornecedor específico. |
-| PUT | `/fornecedores/{id}` | Atualiza os dados de um fornecedor. |
-| DELETE | `/fornecedores/{id}` | Remove um fornecedor do sistema. |
-
----
-
-### 4️⃣ Orçamentos
-| Método | Endpoint | Descrição |
-|---------|-----------|-----------|
-| POST | `/orcamentos` | Cria um novo orçamento. |
-| GET | `/orcamentos` | Lista todos os orçamentos. |
-| GET | `/orcamentos/{id}` | Exibe informações detalhadas de um orçamento. |
-| PUT | `/orcamentos/{id}` | Atualiza dados ou status de um orçamento. |
-| DELETE | `/orcamentos/{id}` | Exclui um orçamento existente. |
-
----
-
-### 5️⃣ Materiais e Kits
-| Método | Endpoint | Descrição |
-|---------|-----------|-----------|
-| POST | `/materiais` | Registra um novo material. |
-| GET | `/materiais` | Lista os materiais cadastrados. |
-| PUT | `/materiais/{id}` | Atualiza as informações de um material. |
-| DELETE | `/materiais/{id}` | Remove um material do estoque. |
-| POST | `/kits` | Cria um novo kit de materiais. |
-| GET | `/kits` | Lista os kits disponíveis para uso. |
-
----
-
-### 6️⃣ Histórico de Vendas
-| Método | Endpoint | Descrição |
-|---------|-----------|-----------|
-| GET | `/vendas` | Exibe o histórico geral de vendas. |
-| GET | `/vendas/{ano}/{mes}` | Filtra as vendas realizadas em determinado período. |
-| GET | `/vendas/detalhado/{idVenda}` | Gera relatório detalhado de uma venda específica (em PDF ou Word). |
-
 ---
 
 ## 📈 Possibilidades de Expansão
@@ -162,6 +64,3 @@ A autenticação é realizada de forma simples, mediante validação de login e 
 - Desenvolvimento de uma interface web integrada ao backend.  
 - Implementação de relatórios estatísticos e gráficos.  
 - Controle de permissões mais granular conforme o perfil do usuário. 
-
----
-> Este documento descreve o funcionamento técnico e estrutural do sistema de **Gestão de Estoques e Pedidos**, apresentando suas principais funcionalidades, arquitetura e tecnologias utilizadas.
