@@ -1,64 +1,88 @@
-# 💼 Sistema de Gestão de Estoques e Pedidos
+Gestão de Estoque e Pedidos (GEP)
 
-O presente projeto consiste no desenvolvimento de um sistema backend em **Java puro**, utilizando **Hibernate** e **MySQL** como sistema gerenciador de banco de dados.  
-O sistema foi concebido para atender às demandas de uma madeireira, possibilitando o gerenciamento eficiente de **clientes, fornecedores, materiais, orçamentos e histórico de vendas**, com perfis de acesso diferenciados para o proprietário e a secretária.
+Sistema em Java para controlar produtos, fornecedores, entradas e saídas de estoque, e registrar vendas. O sistema deve monitorar níveis mínimos de estoque para disparar alertas de reposição, além de registrar movimentações e permitir o cálculo de margem de lucro
+--------------------------------
+2. Principais Requisitos: 
 
----
+Dados do Produto: Código, Nome, Descrição, Preço de Custo, Preço de Venda, Quantidade em Estoque, Nível de Estoque Mínimo.
 
-## 🎯 Objetivo Geral
+Requisitos Funcionais (RF)
 
-Desenvolver um sistema de gestão que possibilite o controle informatizado de estoques e pedidos, permitindo o registro, consulta e atualização de informações de forma organizada e segura. O sistema tem como finalidade auxiliar na tomada de decisões e na otimização dos processos administrativos da empresa.
+RF01: O sistema deve permitir o cadastro, alteração e exclusão de produtos.
 
----
+RF02: O sistema deve permitir o cadastro, alteração e exclusão de Fornecedores.
 
-## 🧩 Objetivos Específicos
+RF03: O sistema deve permitir o cadastro, alteração e exclusão de Clientes.
 
-- Implementar funcionalidades para o cadastro e gerenciamento de clientes e fornecedores;  
-- Registrar e acompanhar orçamentos e pedidos realizados;  
-- Manter o controle do estoque de materiais e kits pré-definidos;  
-- Armazenar e exibir o histórico de vendas de forma consolidada;  
-- Garantir diferentes níveis de acesso conforme o tipo de usuário (proprietário ou secretária).
+RF04: O sistema deve permitir o registro de Entrada de Estoque (Compra), atualizando a quantidade do produto e registrando a movimentação.
 
----
+RF05: O sistema deve permitir o registro de uma Venda para um Cliente.
 
-## ⚙️ Tecnologias Empregadas
+RF06: Ao realizar uma Venda, o sistema deve permitir adicionar múltiplos Itens de Venda (Produtos e suas quantidades).
 
-- **Linguagem:** Java 17  
-- **Banco de Dados:** MySQL  
-- **Gerenciador de Dependências:** Maven  
-- **Biblioteca para JSON:** Gson  
----
+RF07: Ao finalizar uma Venda, o sistema deve dar baixa na quantidade de cada produto no estoque.
 
-## 🧱 Arquitetura do Sistema
+RF08: O sistema deve validar se há estoque suficiente antes de permitir uma Venda (não permitir estoque negativo).
 
-O sistema foi estruturado segundo o modelo em camadas, promovendo modularidade e separação de responsabilidades. As principais camadas são:
+RF09: O sistema deve disparar alertas de reposição quando a quantidade em estoque de um produto atingir seu nível mínimo.
 
-```
-src/
-├── model/           # Classes de entidade (mapeamento JPA)
-├── dao/             # Acesso e manipulação de dados via Hibernate
-├── service/         # Camada de regras de negócio e validações
-├── controller/      # Camada responsável por gerenciar as requisições
-├── util/            # Configurações e classes utilitárias
-└── Main.java        # Classe principal do sistema
-```
+RF10: O sistema deve registrar o histórico de preços de um produto.
 
-Essa arquitetura facilita a manutenção e a escalabilidade do sistema, permitindo futuras extensões sem comprometer o funcionamento das demais partes.
+RF11: O sistema deve gerar um relatório de inventário (produtos em estoque).
 
----
+RF12: O sistema deve gerar um relatório de vendas.
 
-## 🔐 Controle de Acesso
+Requisitos Não-Funcionais (RNF)
 
-O sistema contempla dois tipos de usuários:  
-- **Proprietário:** possui acesso completo a todas as funcionalidades, incluindo o histórico de vendas.  
-- **Secretária:** acesso restrito, sem permissão para visualizar o histórico de vendas.  
+RNF01: O sistema será desenvolvido em Java.
 
-A autenticação é realizada de forma simples, mediante validação de login e senha cadastrados no banco de dados.
----
+RNF02: A persistência de dados será feita com JPA.
 
-## 📈 Possibilidades de Expansão
+RNF03: O código será organizado em pacotes (ex: entidade, dao, servico, visao).
 
-- Inclusão de autenticação por tokens (JWT).  
-- Desenvolvimento de uma interface web integrada ao backend.  
-- Implementação de relatórios estatísticos e gráficos.  
-- Controle de permissões mais granular conforme o perfil do usuário. 
+RNF04: O projeto será versionado no GitHub, com commits frequentes e um README com instruções de execução.
+
+
+
+3. Principais Classes de Domínio
+
+Produto:
+id (Chave Primária) || nome || descricao || precoCusto || precoVenda || quantidadeEstoque || estoqueMinimo 
+@ManyToOne Fornecedor (Muitos produtos para um fornecedor)
+-----
+Fornecedor:
+id (Chave Primária) || nome || cnpj || email
+ @OneToMany(mappedBy="fornecedor") 
+List<Produto> (Um fornecedor para muitos produtos)
+-----
+Cliente:
+id (Chave Primária) || nome || cpf || email
+@OneToMany(mappedBy="cliente")
+List<Venda> (Um cliente para muitas vendas)
+-----
+Venda:
+id (Chave Primária) || dataVenda || valorTotal
+@ManyToOne Cliente (Muitas vendas para um cliente)
+@OneToMany(mappedBy="venda", cascade=CascadeType.ALL) 
+List<ItemVenda> (Uma venda para muitos itens)
+-----
+ItemVenda (Classe associativa):
+id (Chave Primária)
+@ManyToOne Venda || @ManyToOne Produto || quantidade || precoUnitario 
+-----
+MovimentacaoEstoque:
+id (Chave Primária) || @ManyToOne Produto
+-----
+DataMovimentacao:
+tipo (ENUM: ENTRADA, SAIDA)
+quantidade
+-----
+4. Estruturas de Dados Previstas 
+
+List / ArrayList : Será usada extensivamente pelo JPA para gerenciar os relacionamentos OneToMany (ex: List<ItemVenda> em Venda).
+-
+Queue / LinkedList (Fila): utilizarei uma Fila simples para gerenciar os alertas de reposição. Quando um produto atingir o estoque mínimo, ele é adicionado à fila de alertas para ser exibido ao usuário.
+-
+Map / HashMap: Pode ser usado na camada de serviço para otimizar a montagem do carrinho de compras (Venda), usando o ID do produto como chave para acesso rápido.
+-
+Árvore binária: Uma árvore binária para produtos na camada de visão para exibir a lista de produtos sempre ordenada alfabeticamente de forma eficiente.
