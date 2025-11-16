@@ -1,9 +1,12 @@
 package projetomadeira.poo.entidade;
 
+import java.util.ArrayList;
+import java.util.List;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -13,6 +16,9 @@ public class Produto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @OneToMany(mappedBy = "produto")
+    private List<ItemVenda> itensVenda = new ArrayList<>();
 
     private String nome;
     private String descricao;
@@ -88,6 +94,14 @@ public class Produto {
 
     public void setEstoqueMinimo(Integer estoqueMinimo) {
         this.estoqueMinimo = estoqueMinimo;
+    }
+
+    public List<ItemVenda> getItensVenda() {
+        return itensVenda;
+    }
+
+    public void setItensVenda(List<ItemVenda> itensVenda) {
+        this.itensVenda = itensVenda;
     }
 
     // Vamo facilitar
