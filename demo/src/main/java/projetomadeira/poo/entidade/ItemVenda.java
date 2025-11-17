@@ -76,6 +76,7 @@ public class ItemVenda {
     public void setProduto(Produto produto) {
         this.produto = produto;
     }
+
     @Override
     public String toString() {
         return "ItemVenda [id=" + id + ", quantidade=" + quantidade + ", precoUnitario=" + precoUnitario + "]";

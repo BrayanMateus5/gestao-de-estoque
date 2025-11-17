@@ -1,9 +1,13 @@
 package projetomadeira.poo.entidade;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -17,6 +21,9 @@ public class Fornecedor {
     private String nome;
     private String email;
     private String cnpj;
+
+    @OneToMany(mappedBy = "fornecedor")
+    private List<Produto> produtos = new ArrayList<>();
 
     public Fornecedor() {
     }
@@ -58,6 +65,14 @@ public class Fornecedor {
     public void setCnpj(String cnpj) {
         this.cnpj = cnpj;
     }
+
+    public List<Produto> getProdutos() {
+        return produtos;
+    }
+
+    public void setProdutos(List<Produto> produtos) {
+        this.produtos = produtos;
+    }   
 
     @Override
     public String toString() {
