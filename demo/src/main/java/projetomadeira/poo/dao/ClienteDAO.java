@@ -8,6 +8,8 @@ import projetomadeira.poo.util.JPAUtil;
 
 public class ClienteDAO {
 
+
+    
     // Pra salvar o cliente
     public void salvar(Cliente cliente) {
         EntityManager em = JPAUtil.getEntityManager();

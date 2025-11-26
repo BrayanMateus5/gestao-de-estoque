@@ -1,12 +1,11 @@
 package projetomadeira.poo.service;
 
 import java.util.Map;
-
-import org.hibernate.annotations.ParamDef;
-
 import projetomadeira.poo.dao.ClienteDAO;
 import projetomadeira.poo.dao.ProdutoDAO;
 import projetomadeira.poo.dao.VendasDAO;
+import projetomadeira.poo.entidade.Cliente;
+import projetomadeira.poo.entidade.ItemVenda;
 import projetomadeira.poo.entidade.Produto;
 import projetomadeira.poo.entidade.Vendas;
 
@@ -22,52 +21,52 @@ public class ServicoDeVenda {
         this.clienteDAO = new ClienteDAO();
     }
 
-    @param
-    @Param
-
-    public void registrarVenda(Long produtoId, Long clienteId, Map<Long, Integer> produtosVendidos) {
+    public void registrarVenda(Long clienteId, Map<Long, Integer> produtosVendidos) {
         // Verifica se o cliente existe
-        var cliente = clienteDAO.buscarPorId(clienteId);
+        Cliente cliente = clienteDAO.buscarPorId(clienteId);
         if (cliente == null) {
             System.out.println("Erro: Cliente não encontrado.");
             return;
         }
-        //Começa cas venda
-        Vendas venda = new Vendas();
-        double totalVenda = 0.0;
+        Vendas venda = new Vendas(cliente);
+        double valorTotal = 0.0;
 
-        // tem no estoque ?
-        for (Map.Entry<Long, Integer> Entry : produtosVendidos.entrySet()) {
-            Long id = Entry.getKey();
-            Integer quantidade = Entry.getValue();
+        for (Map.Entry<Long, Integer> item : produtosVendidos.entrySet()) {
+            Long produtoId = item.getKey();
+            Integer quantidade = item.getValue();
 
-            //existe ?
-            Produto produto = produtoDAO.buscarPorId(id);
+            Produto produto = produtoDAO.buscarPorId(produtoId);
+
+            // vai validar a existencia do produto
             if (produto == null) {
-                System.out.println("Erro: Produto com ID " + id + " não encontrado.");
+                System.out.println("Erro: Produto com ID " + produtoId + " não encontrado.");
                 return;
             }
-            produto.setQuantidadeEstoque(estoqueAtual - quantidade);
-                       if (produto.getQuantidadeEstoque() < quantidade) {
-                System.out.println("Erro: Estoque insuficiente para o produto " + produto.getNome());
+
+            // valida a quantidade em estoque
+            Double quantidadeEstoque = produto.getQuantidadeEstoque() != null ? produto.getQuantidadeEstoque() : 0.0;
+            if (quantidadeEstoque < quantidade) {
+                System.out.println("Erro: Estoque insuficiente para o produto " + produto.getNome()
+                        + ". O que tem disponível: " + produto.getQuantidadeEstoque());
                 return;
             }
-        }
+            // cria o item da venda
+            ItemVenda itemVenda = new ItemVenda(quantidade, produto.getPrecoVenda(), venda, produto);
 
-        // Registra a venda
-        vendasDAO.salvarVenda(cliente, produtosVendidos);
+            // Bota na lista
+            venda.getItens().add(itemVenda);
 
-        // Atualiza o estoque dos produtos vendidos
-        for (Map.Entry<Long, Integer> entry : produtosVendidos.entrySet()) {
-            Long id = entry.getKey();
-            Integer quantidade = entry.getValue();
-
-            var produto = produtoDAO.buscarPorId(id);
-            produto.setQuantidadeEstoque(produto.getQuantidadeEstoque() - quantidade);
+            // Atualiza o estoque do produto
+            produto.setQuantidadeEstoque(quantidadeEstoque - quantidade);
             produtoDAO.atualizar(produto);
+
+            // puxa o valor total
+            valorTotal += produto.getPrecoVenda() * quantidade;
+
+            // Adiciona o item à venda
+            venda.setValor(valorTotal);
         }
-
-        System.out.println("Venda registrada com sucesso para o cliente: " + cliente.getNome());
+        vendasDAO.salvar(venda);
+        System.out.println("A venda foi feita meu patrão. Custou total de R$ " + valorTotal);
     }
-
 }

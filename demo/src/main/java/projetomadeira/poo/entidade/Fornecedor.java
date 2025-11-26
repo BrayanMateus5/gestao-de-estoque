@@ -72,7 +72,7 @@ public class Fornecedor {
 
     public void setProdutos(List<Produto> produtos) {
         this.produtos = produtos;
-    }   
+    }
 
     @Override
     public String toString() {

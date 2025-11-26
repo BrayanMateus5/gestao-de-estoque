@@ -6,6 +6,12 @@ import projetomadeira.poo.entidade.MovimentacaoEstoque;
 import projetomadeira.poo.entidade.Produto;
 import projetomadeira.poo.entidade.TipoMovimentacao;
 
+
+
+
+// Cliente cliente = new Cliente();
+//cliente.getNome();
+
 public class ServicoDeEstoque {
 
     // Chama os DAOS para acesso
@@ -34,7 +40,7 @@ public class ServicoDeEstoque {
             return;
         }
         // Atualização de quantidade
-        Double estoqueAtual = produto.getQuantidadeEstoque();
+        Double estoqueAtual = (produto.getQuantidadeEstoque() != null) ? produto.getQuantidadeEstoque() : 0.0;
         Double novaQuantidade = estoqueAtual + quantidadeSoma;
         produto.setQuantidadeEstoque(novaQuantidade);
 
