@@ -12,14 +12,9 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "fornecedores")
-public class Fornecedor {
+public class Fornecedor extends Pessoa {
+    // puxa da classe pessoa
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    private String nome;
-    private String email;
     private String cnpj;
 
     @OneToMany(mappedBy = "fornecedor")
@@ -29,33 +24,8 @@ public class Fornecedor {
     }
 
     public Fornecedor(String nome, String email, String cnpj) {
-        this.nome = nome;
-        this.email = email;
+        super(nome, email);
         this.cnpj = cnpj;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getCnpj() {
@@ -76,6 +46,6 @@ public class Fornecedor {
 
     @Override
     public String toString() {
-        return "Fornecedor [id=" + id + ", nome=" + nome + ", cnpj=" + cnpj + "]";
+        return "Fornecedor [id=" + getId() + ", nome=" + getNome() + "cnpj=" + cnpj + "]";
     }
 }

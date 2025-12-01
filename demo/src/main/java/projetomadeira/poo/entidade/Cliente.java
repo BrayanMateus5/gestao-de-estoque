@@ -13,15 +13,9 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "clientes")
 
-public class Cliente {
+public class Cliente extends Pessoa {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    private String nome;
-    private String email;
-    private String CPF;
+    private String cpf;
 
     @OneToMany(mappedBy = "cliente")
     private List<Vendas> vendas = new ArrayList<>();
@@ -29,47 +23,17 @@ public class Cliente {
     public Cliente() {
     }
 
-    public Cliente(String nome, String email, String CPF) {
-        this.nome = nome;
-        this.email = email;
-        this.CPF = CPF;
+    public Cliente(String nome, String email, String cpf) {
+        super(nome, email);
+        this.cpf = cpf;
     }
 
-    public Long getId() {
-        return id;
+    public String getCpf() {
+        return cpf;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getCPF() {
-        return CPF;
-    }
-
-    public void setCPF(String cPF) {
-        CPF = cPF;
-    }
-
-    @Override
-    public String toString() {
-        return "Cliente [id=" + id + ", nome=" + nome + ", CPF=" + CPF + "]";
+    public void setCPF(String cpf) {
+        this.cpf = cpf;
     }
 
     public List<Vendas> getVendas() {
@@ -78,5 +42,10 @@ public class Cliente {
 
     public void setVendas(List<Vendas> vendas) {
         this.vendas = vendas;
+    }
+
+    @Override
+    public String toString() {
+        return "Cliente [id=" + getId() + ", nome =" + getNome() + "CPF =" + cpf + "]";
     }
 }
