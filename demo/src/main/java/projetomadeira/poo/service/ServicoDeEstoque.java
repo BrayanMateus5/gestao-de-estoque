@@ -49,7 +49,7 @@ public class ServicoDeEstoque {
                 TipoMovimentacao.ENTRADA, produto);
 
         // persistencia na atualização
-        produtoDAO.atualizar(produto);
+        produtoDAO.salvar(produto);
         // Cria um registro e salva a movimentação no histórico
         movimentacaoEstoqueDAO.salvar(movimentacao);
 

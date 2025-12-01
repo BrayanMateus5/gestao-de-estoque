@@ -58,7 +58,7 @@ public class ServicoDeVenda {
 
             // Atualiza o estoque do produto
             produto.setQuantidadeEstoque(quantidadeEstoque - quantidade);
-            produtoDAO.atualizar(produto);
+            produtoDAO.salvar(produto);
 
             // puxa o valor total
             valorTotal += produto.getPrecoVenda() * quantidade;
