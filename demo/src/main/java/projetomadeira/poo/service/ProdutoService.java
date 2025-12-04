@@ -1,5 +1,6 @@
 package projetomadeira.poo.service;
 
+import jakarta.persistence.EntityManager;
 import projetomadeira.poo.dao.ProdutoDAO;
 import projetomadeira.poo.entidade.Produto;
 
@@ -7,8 +8,8 @@ public class ProdutoService {
 
     private ProdutoDAO produtoDAO;
 
-    public ProdutoService() {
-        this.produtoDAO = new ProdutoDAO();
+    public ProdutoService(EntityManager em) {
+        this.produtoDAO = new ProdutoDAO(em);
     }
 
     public Produto cadastrar(String nome, String descricao, double custo, double venda, double estoque,

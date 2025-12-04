@@ -1,5 +1,6 @@
 package projetomadeira.poo.service;
 
+import jakarta.persistence.EntityManager;
 import projetomadeira.poo.dao.ClienteDAO;
 import projetomadeira.poo.entidade.Cliente;
 
@@ -7,8 +8,8 @@ public class ClienteService {
 
     private ClienteDAO clienteDAO;
 
-    public ClienteService() {
-        this.clienteDAO = new ClienteDAO();
+    public ClienteService(EntityManager em) {
+        this.clienteDAO = new ClienteDAO(em);
 
     }
 

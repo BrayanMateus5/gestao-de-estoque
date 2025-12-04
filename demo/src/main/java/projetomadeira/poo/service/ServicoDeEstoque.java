@@ -1,5 +1,6 @@
 package projetomadeira.poo.service;
 
+import jakarta.persistence.EntityManager;
 import projetomadeira.poo.dao.MovimentacaoEstoqueDAO;
 import projetomadeira.poo.dao.ProdutoDAO;
 import projetomadeira.poo.entidade.MovimentacaoEstoque;
@@ -19,9 +20,9 @@ public class ServicoDeEstoque {
     private MovimentacaoEstoqueDAO movimentacaoEstoqueDAO;
 
     // Iniciando os DAOS
-    public ServicoDeEstoque() {
-        this.produtoDAO = new ProdutoDAO();
-        this.movimentacaoEstoqueDAO = new MovimentacaoEstoqueDAO();
+    public ServicoDeEstoque(EntityManager em) {
+        this.produtoDAO = new ProdutoDAO(em);
+        this.movimentacaoEstoqueDAO = new MovimentacaoEstoqueDAO(em);
     }
     // Regras de negócio...
 

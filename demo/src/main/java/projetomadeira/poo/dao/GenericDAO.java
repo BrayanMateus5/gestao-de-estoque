@@ -28,10 +28,9 @@ public abstract class GenericDAO<T> { // aceita todas as classes
         return em.find(entityClass, id);
     }
 
-    @SuppressWarnings("unchecked")
     public List<T> listarTodos() {
         String jpql = "FROM " + entityClass.getSimpleName();
-        return em.createQuery(jpql).getResultList();
+        return em.createQuery(jpql, entityClass).getResultList();
     }
 
     public void excluir(Long id) {

@@ -1,5 +1,6 @@
 package projetomadeira.poo.service;
 
+import jakarta.persistence.EntityManager;
 import projetomadeira.poo.dao.FornecedorDAO;
 import projetomadeira.poo.entidade.Fornecedor;
 
@@ -7,8 +8,8 @@ public class FornecedorService {
 
     private FornecedorDAO fornecedorDAO;
 
-    public FornecedorService() {
-        this.fornecedorDAO = new FornecedorDAO();
+    public FornecedorService(EntityManager em) {
+        this.fornecedorDAO = new FornecedorDAO(em);
     }
 
     public Fornecedor cadastrar(String nome, String email, String cnpj) {

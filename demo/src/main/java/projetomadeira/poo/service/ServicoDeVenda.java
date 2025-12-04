@@ -1,6 +1,8 @@
 package projetomadeira.poo.service;
 
 import java.util.Map;
+
+import jakarta.persistence.EntityManager;
 import projetomadeira.poo.dao.ClienteDAO;
 import projetomadeira.poo.dao.ProdutoDAO;
 import projetomadeira.poo.dao.VendasDAO;
@@ -15,10 +17,10 @@ public class ServicoDeVenda {
     private ProdutoDAO produtoDAO;
     private ClienteDAO clienteDAO;
 
-    public ServicoDeVenda() {
-        this.vendasDAO = new VendasDAO();
-        this.produtoDAO = new ProdutoDAO();
-        this.clienteDAO = new ClienteDAO();
+    public ServicoDeVenda(EntityManager em) {
+        this.vendasDAO = new VendasDAO(em);
+        this.produtoDAO = new ProdutoDAO(em);
+        this.clienteDAO = new ClienteDAO(em);
     }
 
     public void registrarVenda(Long clienteId, Map<Long, Integer> produtosVendidos) {

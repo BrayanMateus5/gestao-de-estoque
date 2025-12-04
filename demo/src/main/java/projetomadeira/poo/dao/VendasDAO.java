@@ -1,10 +1,11 @@
 package projetomadeira.poo.dao;
 
+import jakarta.persistence.EntityManager;
 import projetomadeira.poo.entidade.Vendas;
 
 public class VendasDAO extends GenericDAO<Vendas> {
 
-    public VendasDAO() {
-        super(Vendas.class); // cuida de classe
+    public VendasDAO(EntityManager em) {
+        super(Vendas.class, em); // cuida de classe
     }
 }

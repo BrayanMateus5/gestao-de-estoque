@@ -3,6 +3,9 @@ package projetomadeira.poo.app;
 import java.util.HashMap;
 import java.util.Map;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 import projetomadeira.poo.entidade.Cliente;
 import projetomadeira.poo.entidade.Fornecedor;
 import projetomadeira.poo.entidade.Produto;
@@ -16,56 +19,70 @@ public class Main {
     public static void main(String[] args) {
 
         System.out.println("--- Começando a Gestão de seu estoque---");
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("persistenciaPU");
+        EntityManager em = emf.createEntityManager();
 
-        ProdutoService produtoService = new ProdutoService();
-        ClienteService clienteService = new ClienteService();
-        FornecedorService fornecedorService = new FornecedorService();
-        ServicoDeEstoque servicoDeEstoque = new ServicoDeEstoque();
-        ServicoDeVenda servicoDeVenda = new ServicoDeVenda();
+        try {
+            ProdutoService produtoService = new ProdutoService(em);
+            ClienteService clienteService = new ClienteService(em);
+            FornecedorService fornecedorService = new FornecedorService(em);
+            ServicoDeEstoque servicoDeEstoque = new ServicoDeEstoque(em);
+            ServicoDeVenda servicoDeVenda = new ServicoDeVenda(em);
 
-        // Primeira fase: Adicionar os produtos, clientes e fornecedores
+            // Primeira fase: Adicionar os produtos, clientes e fornecedores
 
-        Fornecedor SantaMaria = fornecedorService.cadastrar("Madereira SantaMaria", "Madereirareira@gmail.com",
-                "44.754.213/3435-54");
-        Cliente Osvaldo = clienteService.cadastrar("Osvaldo Silveira", "OsvaldoSil@gmail.com", "456.741.568-78");
+            Fornecedor SantaMaria = fornecedorService.cadastrar("Madereira SantaMaria", "Madereirareira@gmail.com",
+                    "44.754.213/3435-54");
+            Cliente Osvaldo = clienteService.cadastrar("Osvaldo Silveira", "OsvaldoSil@gmail.com", "456.741.568-78");
 
-        Produto VigaMadeira = produtoService.cadastrar("Pino do coquilho", "Viga de madeira de carvalho", 50.0, 80.0,
-                250.0, 10);
+            Produto VigaMadeira = produtoService.cadastrar("Pino do coquilho", "Viga de madeira de carvalho", 50.0,
+                    80.0,
+                    250.0, 10);
 
-        // Guardar ID
-        Long idProduto = VigaMadeira.getId();
-        Long idCliente = Osvaldo.getId();
+            // Guardar ID
+            Long idProduto = VigaMadeira.getId();
+            Long idCliente = Osvaldo.getId();
 
-        // -- Segunda fase: Entrada do estoque
+            // -- Segunda fase: Entrada do estoque
 
-        System.out.println("--- Vamos receber os produtos ---");
+            System.out.println("--- Vamos receber os produtos ---");
 
-        servicoDeEstoque.registrarEntrada(idProduto, 10);
+            servicoDeEstoque.registrarEntrada(idProduto, 10);
 
-        // terceira fase : Vamo vender !!
-        System.out.println("--- Chegou cliente na loja ---");
+            // terceira fase : Vamo vender !!
+            System.out.println("--- Chegou cliente na loja ---");
 
-        // Cliente pegou o carrinho de compras
-        Map<Long, Integer> itensVenda = new HashMap<>();
-        itensVenda.put(idProduto, 5); // Colocou as 5 vigas
+            // Cliente pegou o carrinho de compras
+            Map<Long, Integer> itensVenda = new HashMap<>();
+            itensVenda.put(idProduto, 5); // Colocou as 5 vigas
 
-        servicoDeVenda.registrarVenda(idCliente, itensVenda);
+            servicoDeVenda.registrarVenda(idCliente, itensVenda);
 
-        // Vamos aos conferes
+            // Vamos aos conferes
 
-        Produto produtoAtualizado = produtoService.buscarPorId(idProduto);
+            Produto produtoAtualizado = produtoService.buscarPorId(idProduto);
 
-        System.out.println("Produto : " + produtoAtualizado.getNome());
-        System.out.println("Estoque Atual: " + produtoAtualizado.getQuantidadeEstoque());
-        System.out.println("Entrada registrada:       //alterar 10 unidades");
-        System.out.println("Venda feita           -5.0");
-        System.out.println("----------------------------------------------------------");
-        System.out.println("Estoque final: " + produtoAtualizado.getQuantidadeEstoque());
+            System.out.println("Produto : " + produtoAtualizado.getNome());
+            System.out.println("Estoque Atual: " + produtoAtualizado.getQuantidadeEstoque());
+            System.out.println("Entrada registrada:       //alterar 10 unidades");
+            System.out.println("Venda feita           -5.0");
+            System.out.println("----------------------------------------------------------");
+            System.out.println("Estoque final: " + produtoAtualizado.getQuantidadeEstoque());
 
-        if (produtoAtualizado.getQuantidadeEstoque() == 255.0) {
-            System.out.println("\nVAMUUUU!!  Deu certo o sistema");
-        } else {
-            System.out.println("\n AOW !!  Deu algo de errado aqui");
+            if (produtoAtualizado.getQuantidadeEstoque() == 255.0) {
+                System.out.println("\nVAMUUUU!!  Deu certo o sistema");
+            } else {
+                System.out.println("\n AOW !!  Deu algo de errado aqui");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (em != null && em.isOpen()) {
+                em.close();
+            }
+            if (emf != null && emf.isOpen()) {
+                emf.close();
+            }
         }
     }
 }
