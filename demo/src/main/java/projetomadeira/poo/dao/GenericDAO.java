@@ -1,20 +1,19 @@
 package projetomadeira.poo.dao;
 
 import java.util.List;
-
 import jakarta.persistence.EntityManager;
-import projetomadeira.poo.util.JPAUtil;
 
 public abstract class GenericDAO<T> { // aceita todas as classes
 
-    private Class<T> entityClass;
+    private final Class<T> entityClass;
+    protected EntityManager em;
 
-    public GenericDAO(Class<T> entityClass) {
+    public GenericDAO(Class<T> entityClass, EntityManager em) {
         this.entityClass = entityClass;
+        this.em = em;
     }
 
     public void salvar(T entity) {
-        EntityManager em = JPAUtil.getEntityManager();
         try {
             em.getTransaction().begin();
             em.merge(entity);
@@ -22,36 +21,23 @@ public abstract class GenericDAO<T> { // aceita todas as classes
         } catch (Exception e) {
             em.getTransaction().rollback();
             e.printStackTrace();
-        } finally {
-            em.close();
         }
     }
 
     public T buscarPorId(Long id) {
-        EntityManager em = JPAUtil.getEntityManager();
-        try {
-            return em.find(entityClass, id);
-        } finally {
-            em.close();
-        }
+        return em.find(entityClass, id);
     }
 
+    @SuppressWarnings("unchecked")
     public List<T> listarTodos() {
-        EntityManager em = JPAUtil.getEntityManager();
-        try {
-            String jpql = "FROM " + entityClass.getSimpleName();
-            return em.createQuery(jpql, entityClass).getResultList();
-        } finally {
-            em.close();
-        }
+        String jpql = "FROM " + entityClass.getSimpleName();
+        return em.createQuery(jpql).getResultList();
     }
 
     public void excluir(Long id) {
-        EntityManager em = JPAUtil.getEntityManager();
         try {
             em.getTransaction().begin();
             T entity = em.find(entityClass, id);
-
             if (entity != null) {
                 em.remove(entity);
             }
@@ -59,8 +45,6 @@ public abstract class GenericDAO<T> { // aceita todas as classes
         } catch (Exception e) {
             em.getTransaction().rollback();
             e.printStackTrace();
-        } finally {
-            em.close();
         }
     }
 }

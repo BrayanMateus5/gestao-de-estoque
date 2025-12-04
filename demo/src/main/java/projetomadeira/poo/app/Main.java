@@ -3,12 +3,12 @@ package projetomadeira.poo.app;
 import java.util.HashMap;
 import java.util.Map;
 
-import projetomadeira.poo.dao.ClienteDAO;
-import projetomadeira.poo.dao.FornecedorDAO;
-import projetomadeira.poo.dao.ProdutoDAO;
 import projetomadeira.poo.entidade.Cliente;
 import projetomadeira.poo.entidade.Fornecedor;
 import projetomadeira.poo.entidade.Produto;
+import projetomadeira.poo.service.ClienteService;
+import projetomadeira.poo.service.FornecedorService;
+import projetomadeira.poo.service.ProdutoService;
 import projetomadeira.poo.service.ServicoDeEstoque;
 import projetomadeira.poo.service.ServicoDeVenda;
 
@@ -17,33 +17,24 @@ public class Main {
 
         System.out.println("--- Começando a Gestão de seu estoque---");
 
-        ProdutoDAO produtoDAO = new ProdutoDAO();
-        ClienteDAO clienteDAO = new ClienteDAO();
-        FornecedorDAO fornecedorDAO = new FornecedorDAO();
-
+        ProdutoService produtoService = new ProdutoService();
+        ClienteService clienteService = new ClienteService();
+        FornecedorService fornecedorService = new FornecedorService();
         ServicoDeEstoque servicoDeEstoque = new ServicoDeEstoque();
         ServicoDeVenda servicoDeVenda = new ServicoDeVenda();
 
         // Primeira fase: Adicionar os produtos, clientes e fornecedores
 
-        Fornecedor SantaMaria = new Fornecedor("Madereira SantaMaria", "Madereirareira@gmail.com",
+        Fornecedor SantaMaria = fornecedorService.cadastrar("Madereira SantaMaria", "Madereirareira@gmail.com",
                 "44.754.213/3435-54");
-        Cliente Osvaldo = new Cliente("Osvaldo Silveira", "OsvaldoSil@gmail.com", "456.741.568-78");
+        Cliente Osvaldo = clienteService.cadastrar("Osvaldo Silveira", "OsvaldoSil@gmail.com", "456.741.568-78");
 
-        Produto VigaMadeira = new Produto("Pino do coquilho", "Viga de madeira de carvalho", 50.0, 80.0, 250.0, 10);
-
-        // Salvar
-
-        fornecedorDAO.salvar(SantaMaria);
-        clienteDAO.salvar(Osvaldo);
-        produtoDAO.salvar(VigaMadeira);
+        Produto VigaMadeira = produtoService.cadastrar("Pino do coquilho", "Viga de madeira de carvalho", 50.0, 80.0,
+                250.0, 10);
 
         // Guardar ID
         Long idProduto = VigaMadeira.getId();
         Long idCliente = Osvaldo.getId();
-
-        System.out.println("--- Cadastro incial feito !! ---");
-        System.out.println("ID Produto: " + idProduto + " | Estoque inicial: " + VigaMadeira.getQuantidadeEstoque());
 
         // -- Segunda fase: Entrada do estoque
 
@@ -62,7 +53,7 @@ public class Main {
 
         // Vamos aos conferes
 
-        Produto produtoAtualizado = produtoDAO.buscarPorId(idProduto);
+        Produto produtoAtualizado = produtoService.buscarPorId(idProduto);
 
         System.out.println("Produto : " + produtoAtualizado.getNome());
         System.out.println("Estoque Atual: " + produtoAtualizado.getQuantidadeEstoque());
@@ -75,6 +66,6 @@ public class Main {
             System.out.println("\nVAMUUUU!!  Deu certo o sistema");
         } else {
             System.out.println("\n AOW !!  Deu algo de errado aqui");
-    }
+        }
     }
 }
