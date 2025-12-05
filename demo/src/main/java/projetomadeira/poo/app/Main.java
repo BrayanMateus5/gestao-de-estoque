@@ -1,8 +1,5 @@
 package projetomadeira.poo.app;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
@@ -53,23 +50,17 @@ public class Main {
             System.out.println("--- Chegou cliente na loja ---");
 
             // Cliente pegou o carrinho de compras
-            Map<Long, Integer> itensVenda = new HashMap<>();
-            itensVenda.put(idProduto, 5); // Colocou as 5 vigas
-
-            servicoDeVenda.registrarVenda(idCliente, itensVenda);
+            servicoDeVenda.registrarVenda(idCliente, idProduto, 5);
 
             // Vamos aos conferes
 
-            Produto produtoAtualizado = produtoService.buscarPorId(idProduto);
+            Produto produtoFinal = produtoService.buscarPorId(idProduto);
 
-            System.out.println("Produto : " + produtoAtualizado.getNome());
-            System.out.println("Estoque Atual: " + produtoAtualizado.getQuantidadeEstoque());
-            System.out.println("Entrada registrada:       //alterar 10 unidades");
-            System.out.println("Venda feita           -5.0");
+            System.out.println("Produto : " + produtoFinal.getNome());
             System.out.println("----------------------------------------------------------");
-            System.out.println("Estoque final: " + produtoAtualizado.getQuantidadeEstoque());
+            System.out.println("Estoque final: " + produtoFinal.getQuantidadeEstoque());
 
-            if (produtoAtualizado.getQuantidadeEstoque() == 255.0) {
+            if (produtoFinal.getQuantidadeEstoque() == 255.0) {
                 System.out.println("\nVAMUUUU!!  Deu certo o sistema");
             } else {
                 System.out.println("\n AOW !!  Deu algo de errado aqui");
@@ -77,10 +68,10 @@ public class Main {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (em != null && em.isOpen()) {
+            if (em.isOpen()) {
                 em.close();
             }
-            if (emf != null && emf.isOpen()) {
+            if (emf.isOpen()) {
                 emf.close();
             }
         }
